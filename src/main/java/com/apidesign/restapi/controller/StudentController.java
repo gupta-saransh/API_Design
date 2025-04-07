@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -35,6 +36,7 @@ public class StudentController {
     
     // UC_S2: Get student by ID
     @GetMapping("/{studentId}")
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<StudentResource> getStudentById(@PathVariable Integer studentId) throws Exception {
         StudentResource student = studentService.getStudentById(studentId);
         return ResponseEntity.ok(student);
@@ -42,6 +44,7 @@ public class StudentController {
     
     // UC_S3: Get all students
     @GetMapping
+    @PreAuthorize("hasRole('USER') or hasRole('ADMIN')")
     public ResponseEntity<List<StudentResource>> getAllStudents() {
         List<StudentResource> students = studentService.getAllStudents();
         return ResponseEntity.ok(students);
@@ -49,6 +52,7 @@ public class StudentController {
     
     // UC_S4: Update student
     @PutMapping("/{studentId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<StudentResource> updateStudent(@PathVariable Integer studentId, 
                                                @Valid @RequestBody StudentResource student) throws Exception {
         StudentResource updatedStudent = studentService.updateStudent(studentId, student);
@@ -57,6 +61,7 @@ public class StudentController {
     
     // UC_S5: Delete student
     @DeleteMapping("/{studentId}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<Void> deleteStudent(@PathVariable Integer studentId) throws Exception {
         studentService.deleteStudent(studentId);
         return ResponseEntity.noContent().build();
